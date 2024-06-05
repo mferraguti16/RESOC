@@ -6,7 +6,7 @@ session_start();
 <html lang="fr">
     <head>
         <meta charset="utf-8">
-        <title>ReSoC - Connexion</title> 
+        <title>ReSoC - Connexion</title>
         <meta name="author" content="Julien Falconnet">
         <link rel="stylesheet" href="style.css"/>
     </head>
@@ -26,12 +26,9 @@ session_start();
                     <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
                     <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
                 </ul>
-
             </nav>
         </header>
-
         <div id="wrapper" >
-
             <aside>
                 <h2>Présentation</h2>
                 <p>Bienvenu sur notre réseau social.</p>
@@ -51,12 +48,10 @@ session_start();
                         // on ne fait ce qui suit que si un formulaire a été soumis.
                         // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                         // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                        echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                        //echo "<pre>" . print_r($_POST, 1) . "</pre>";
                         // et complétez le code ci dessous en remplaçant les ???
-                        $emailAVerifier = $_POST['???'];
-                        $passwdAVerifier = $_POST['???'];
-
-
+                        $emailAVerifier = $_POST['email'];
+                        $passwdAVerifier = $_POST['motpasse'];
                         //Etape 3 : Ouvrir une connexion avec la base de donnée.
                         //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
                         //Etape 4 : Petite sécurité
@@ -78,16 +73,17 @@ session_start();
                         if ( ! $user OR $user["password"] != $passwdAVerifier)
                         {
                             echo "La connexion a échouée. ";
-                            
                         } else
                         {
                             echo "Votre connexion est un succès : " . $user['alias'] . ".";
-                            // Etape 7 : Se souvenir que l'utilisateur s'est connecté pour la suite
-                            // documentation: https://www.php.net/manual/fr/session.examples.basic.php
-                            $_SESSION['connected_id']=$user['id'];
+                            // Etape 6 : Enregistrement de l'ID de l'utilisateur connecté dans la session
+                            $_SESSION['connected_id'] = $user['id'];
+                            // Etape 7 : Redirection vers le mur de l'utilisateur connecté
+                            header("Location: wall.php?user_id=" . $user['id']);
+                            exit(); // Assure que le script s'arrête ici pour éviter que du contenu indésirable ne soit envoyé après la redirection
                         }
-                    }
-                    ?>                     
+                        }
+                    ?>
                     <form action="login.php" method="post">
                         <input type='hidden'name='???' value='achanger'>
                         <dl>
@@ -96,13 +92,12 @@ session_start();
                             <dt><label for='motpasse'>Mot de passe</label></dt>
                             <dd><input type='password'name='motpasse'></dd>
                         </dl>
-                        <input type='submit'>
+                       <a href="wall.php?user_id=<?php echo $user['id']?>"><input type='submit'> </a>
                     </form>
                     <p>
                         Pas de compte?
                         <a href='registration.php'>Inscrivez-vous.</a>
                     </p>
-
                 </article>
             </main>
         </div>

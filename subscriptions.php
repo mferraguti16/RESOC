@@ -1,4 +1,11 @@
-<?php include("config.php");?>
+<?php include("config.php");
+// Check if the user is logged in
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
 <!doctype html>
 <html lang="fr">
     <head>

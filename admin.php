@@ -1,4 +1,12 @@
-<?php include("config.php")?>
+<?php include("config.php");
+// on regarde si l'utilisateur est loggé
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
+
 <!doctype html>
 <html lang="fr">
     <head>
@@ -28,9 +36,12 @@
         </header>
 
         <?php
-        /* Etape 1: Ouvrir une connexion avec la base de donnée. 
-         * On va en avoir besoin pour la suite */
-        /* Vérification */
+        /**
+         * Etape 1: Ouvrir une connexion avec la base de donnée.
+         */
+        // on va en avoir besoin pour la suite
+        
+        //verification
         if ($mysqli->connect_errno)
         {
             echo("Échec de la connexion : " . $mysqli->connect_error);
@@ -41,7 +52,9 @@
             <aside>
                 <h2>Mots-clés</h2>
                 <?php
-                /* Étape 2 : trouver tous les mots clés */
+                /*
+                 * Etape 2 : trouver tous les mots clés
+                 */
                 $laQuestionEnSql = "SELECT * FROM `tags` LIMIT 50";
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 // Vérification
@@ -51,8 +64,10 @@
                     exit();
                 }
 
-                /* Étape 3 : @todo : Afficher les mots clés en s'inspirant de ce qui a été fait dans news.php
-                 * Attention à en pas oublier de modifier tag_id=321 avec l'id du mot dans le lien */
+                /*
+                 * Etape 3 : @todo : Afficher les mots clés en s'inspirant de ce qui a été fait dans news.php
+                 * Attention à en pas oublier de modifier tag_id=321 avec l'id du mot dans le lien
+                 */
                 while ($tag = $lesInformations->fetch_assoc())
                 {
                     //echo "<pre>" . print_r($tag, 1) . "</pre>";
@@ -88,10 +103,10 @@
                  */
                 while ($users = $lesInformations->fetch_assoc())
                 {
-                    echo "<pre>" . print_r($tag, 1) . "</pre>";
+                    //echo "<pre>" . print_r($tag, 1) . "</pre>";
                     ?>
                     <article>
-                        <h3><?php echo $users["alias"]?></h3>
+                        <h3><a href="wall.php?user_id=<?php echo $users['id']?>"><?php echo htmlspecialchars($users['alias']); ?></a></h3>
                         <p><?php echo $users["id"]?></p>
                         <nav>
                             <a href="wall.php?user_id=<?php  echo $users['id']?>">Mur</a>

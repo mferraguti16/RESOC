@@ -1,4 +1,11 @@
-<?php include("config.php")?>
+<?php include("config.php");
+// Check if the user is logged in
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -28,22 +35,14 @@
         </header>
         <div id="wrapper">
             <?php
-            /**
-             * Cette page est similaire à wall.php ou feed.php 
-             * mais elle porte sur les mots-clés (tags)
-             */
-            /**
-             * Etape 1: Le mur concerne un mot-clé en particulier
-             */
+            /** Cette page est similaire à wall.php ou feed.php mais elle porte sur les mots-clés (tags) */
+            /** Etape 1: Le mur concerne un mot-clé en particulier */
             $tagId = intval($_GET['tag_id']);
             ?>
             
-
             <aside>
                 <?php
-                /**
-                 * Etape 3: récupérer le nom du mot-clé
-                 */
+                /** Etape 3: récupérer le nom du mot-clé */
                 $laQuestionEnSql = "SELECT * FROM tags WHERE id= '$tagId' ";
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 $tag = $lesInformations->fetch_assoc();
@@ -65,9 +64,7 @@
             </aside>
             <main>
                 <?php
-                /**
-                 * Etape 3: récupérer tous les messages avec un mot clé donné
-                 */
+                /** Etape 3: récupérer tous les messages avec un mot clé donné */
                 $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
@@ -90,12 +87,9 @@
                     echo("Échec de la requete : " . $mysqli->error);
                 }
 
-                /**
-                 * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
-                 */
+                /** Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php */
                 while ($post = $lesInformations->fetch_assoc())
                 {
-
                     // echo "<pre>" . print_r($post, 1) . "</pre>";
                     ?>                
                     <article>
@@ -113,7 +107,6 @@
                         </footer>
                     </article>
                 <?php } ?>
-
 
             </main>
         </div>

@@ -1,4 +1,11 @@
-<?php include("config.php")?>
+<?php include("config.php");
+// Check if the user is logged in
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -64,6 +71,7 @@
                 $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
+                    users.id as author_id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  
                     GROUP_CONCAT(DISTINCT tags.label) AS taglist 
@@ -104,13 +112,12 @@
                         <h3>
                             <time><?php echo $post['created'] ?></time>
                         </h3>
-                        <address><?php echo $post['author_name'] ?></address>
+                        <address><a href="wall.php?user_id=<?php echo $post['author_id']?>"><?php echo $post['author_name'] ?></a></address>
                         <div>
                             <!-- ci-dessous on enleve le caractere # du text( content) -->
                        <?php $cleaned_content = str_replace('#', '', $post['content']);
     
                         echo "<p>" . htmlspecialchars($cleaned_content) . "</p>";?>
-
                         
                         </div>
                         <footer>

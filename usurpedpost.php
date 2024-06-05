@@ -1,7 +1,11 @@
-<?php include("config.php")?>
-<?php
-session_start();
-?>
+<?php include("config.php");
+// Check if the user is logged in
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -56,7 +60,6 @@ session_start();
                         $listAuteurs[$user['id']] = $user['alias'];
                     }
 
-
                     /**
                      * TRAITEMENT DU FORMULAIRE
                      */
@@ -68,11 +71,10 @@ session_start();
                         // on ne fait ce qui suit que si un formulaire a été soumis.
                         // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                         // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                        echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                        //echo "<pre>" . print_r($_POST, 1) . "</pre>";
                         // et complétez le code ci dessous en remplaçant les ???
-                        $authorId = $_POST['???'];
-                        $postContent = $_POST['???'];
-
+                        $authorId = $_POST['auteur'];
+                        $postContent = $_POST['message'];
 
                         //Etape 3 : Petite sécurité
                         // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
@@ -80,15 +82,15 @@ session_start();
                         $postContent = $mysqli->real_escape_string($postContent);
                         //Etape 4 : construction de la requete
                         $lInstructionSql = "INSERT INTO posts "
-                                . "(id, user_id, content, created, permalink, post_id) "
+                                . "(id, user_id, content, created, parent_id) "
                                 . "VALUES (NULL, "
                                 . $authorId . ", "
                                 . "'" . $postContent . "', "
                                 . "NOW(), "
-                                . "'', "
+                               
                                 . "NULL);"
                                 ;
-                        echo $lInstructionSql;
+                            //echo $lInstructionSql;
                         // Etape 5 : execution
                         $ok = $mysqli->query($lInstructionSql);
                         if ( ! $ok)

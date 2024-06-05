@@ -1,4 +1,11 @@
-<?php include("config.php")?>
+<?php include("config.php");
+// Check if the user is logged in
+if (!isset($_SESSION['connected_id'])) {
+    header("Location: login.php");
+    exit();
+}
+// Get the user ID from the session
+$userId = intval($_SESSION['connected_id']) ?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -70,6 +77,7 @@
                     SELECT posts.content,
                     posts.created,
                     users.alias as author_name,  
+                    users.id as author_id,
                     count(likes.id) as like_number,  
                     GROUP_CONCAT(DISTINCT tags.label) AS taglist 
                     FROM followers 
@@ -99,12 +107,10 @@
                     <h3>
                       <time datetime='2020-02-01 11:12:13' ><?php echo $posts['created']?></time>
                     </h3>
-                    <address><?php echo $posts['author_name']?></address>
+                    <address><a href="wall.php?user_id=<?php echo $posts['author_id'] ?>"><?php echo $posts['author_name']?></a></address>
                     <div>
                         <?php $cleaned_content = str_replace('#', '', $posts['content']);
-    
-                        echo "<p>" . htmlspecialchars($cleaned_content) . "</p>";?>
-                        
+                        echo "<p>" . htmlspecialchars($cleaned_content) . "</p>";?> 
                     </div>                                            
                     <footer>
                             <small>♥<?php echo $posts['like_number'] ?> </small>
